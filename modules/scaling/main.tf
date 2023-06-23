@@ -57,7 +57,28 @@ resource "aws_launch_template" "Backend_LT" {
   instance_type          = "t2.micro"
   key_name               = "3TierLab"
   vpc_security_group_ids = [var.backend_sg]
-  user_data              = filebase64("${path.module}/ec2_userdata_backend.sh")
+  # user_data              = filebase64("${path.module}/ec2_userdata_backend.sh")
+  iam_instance_profile {
+    arn = var.backend_iam_profile
+  }
+  user_data = "${base64encode(<<EOF
+#!/bin/bash
+sudo echo 'DBHOSTNAME="devopslab3-current-mustang-db.cxtcugzilndd.us-east-1.rds.amazonaws.com"' | sudo tee -a /etc/environment
+sudo echo 'DBPORT="5432"' | sudo tee -a /etc/environment
+sudo echo 'DBUSERNAME="webapp"' | sudo tee -a /etc/environment
+sudo echo 'DBNAME="datasets"' | sudo tee -a /etc/environment
+sudo apt-get update
+sudo apt-get install -y git python3.10 python3-pip
+sudo mkdir devops-lab-3-webapp
+cd devops-lab-3-webapp
+sudo git init
+sudo git pull https://github.com/dp997/devops-lab-3-webapp.git
+sudo pip install -r requirements.txt
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+sudo echo "REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/placement/region)" | sudo tee -a /etc/environment
+sudo python3.10 app.py
+  EOF
+  )}"
   tags = {
     Name = "Backend"
   }
@@ -80,6 +101,7 @@ resource "aws_autoscaling_group" "backend_asg" {
   max_size                  = 3
   desired_capacity          = 1
 }
+
 #`````````
 #Bastion host
 #`````````
@@ -92,5 +114,5 @@ resource "aws_instance" "bastion_host" {
   key_name                    = "3TierLab"
   subnet_id                   = var.public_subnet_1
   associate_public_ip_address = true
-  vpc_security_group_ids      = [var.backend_sg]
+  vpc_security_group_ids      = [var.frontend_sg]
 }

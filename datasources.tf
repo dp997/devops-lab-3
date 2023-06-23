@@ -36,7 +36,3 @@ data "aws_route53_zone" "r53_zone" {
   name         = var.domain_name
   private_zone = false
 }
-
-# data "aws_lambda_layer_version" "pandas_layer" {
-#   layer_name = "AWSSDKPandas-Python310"
-# }

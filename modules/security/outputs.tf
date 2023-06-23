@@ -24,3 +24,7 @@ output "nat_iam_profile" {
 output "lambda_iam_role" {
     value = aws_iam_role.lambda_read.arn
 }
+
+output "backend_iam_profile" {
+    value = aws_iam_instance_profile.backend_iam_profile.arn
+}

@@ -118,9 +118,15 @@ module "scaling" {
   frontend_sg          = module.security.frontend_sg
   backend_sg           = module.security.backend_sg
   frontend_iam_profile = module.security.frontend_iam_profile
+  backend_iam_profile = module.security.backend_iam_profile
   #load balancer outputs
   Backend_LB_TG  = module.load_balancers.Backend_LB_TG
   Frontend_LB_TG = module.load_balancers.Frontend_LB_TG
+  #db outputs
+  db_hostname = module.rds.db_hostname
+  db_port     = module.rds.db_port
+  db_name     = module.rds.db_name
+  db_username = module.rds.db_username
 }
 
 #S3
@@ -140,12 +146,12 @@ module "rds" {
   project_name = random_pet.unique_id.id
   db_password  = var.db_password
   aws_region   = var.aws_region
-  #vpc
+  #vpc outputs
   public_subnet_1  = module.vpc.public_subnet_1
   public_subnet_2  = module.vpc.public_subnet_2
   private_subnet_1 = module.vpc.private_subnet_1
   private_subnet_2 = module.vpc.private_subnet_2
-  #security
+  #security ouputs
   frontend_sg = module.security.frontend_sg
   backend_sg  = module.security.backend_sg
   database_sg = module.security.database_sg

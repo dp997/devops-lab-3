@@ -34,6 +34,9 @@ variable "frontend_iam_profile" {
     type = string
 }
 
+variable "backend_iam_profile" {
+    type = string
+}
 variable "Frontend_LB_TG" {
     type = string
 }
@@ -47,5 +50,21 @@ variable "frontend_ami" {
 }
 
 variable "backend_ami" {
+    type = string
+}
+
+variable "db_hostname" {
+    type = string
+}
+
+variable "db_port" {
+    type = string
+}
+
+variable "db_username" {
+    type = string
+}
+
+variable "db_name" {
     type = string
 }
