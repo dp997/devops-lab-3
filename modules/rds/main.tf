@@ -44,28 +44,17 @@ provider "postgresql" {
   superuser = false
 }
 
-resource "postgresql_role" "read_only" {
-  name = "read_only"
-}
-
-resource postgresql_grant "read_tables" {
-  database = "datasets"
-  role = postgresql_role.read_only.name
-  schema = "public"
-  object_type = "table"
-  objects = ["test_dataset"]
-  privileges = ["SELECT"]
-}
-
 resource "postgresql_role" "lambda_role" {
   name = "lambda"
   login = true
   roles = ["rds_iam"]
   depends_on = [aws_db_instance.postgres1]
+  superuser = false
 }
 
 resource "postgresql_role" "webapp_role" {
   name = "webapp"
   login = true
-  roles = ["rds_iam", "read_only"]
+  roles = ["rds_iam"]
+  superuser = false
 }

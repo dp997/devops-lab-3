@@ -22,9 +22,19 @@ resource "aws_lambda_function" "pytest" {
       }
     }
     layers = ["arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python310:3", aws_lambda_layer_version.layer1.arn]
-    timeout = 60
+    timeout = 20
     vpc_config {
       subnet_ids = [var.private_subnet1]
       security_group_ids = [var.backend_sg]
     }
 }
+
+resource "aws_lambda_invocation" "event1" {
+  function_name = aws_lambda_function.pytest.function_name
+
+  input = jsonencode({
+    "dataset" = "Cars"
+  })
+
+}
+

@@ -118,7 +118,7 @@ module "scaling" {
   frontend_sg          = module.security.frontend_sg
   backend_sg           = module.security.backend_sg
   frontend_iam_profile = module.security.frontend_iam_profile
-  backend_iam_profile = module.security.backend_iam_profile
+  backend_iam_profile  = module.security.backend_iam_profile
   #load balancer outputs
   Backend_LB_TG  = module.load_balancers.Backend_LB_TG
   Frontend_LB_TG = module.load_balancers.Frontend_LB_TG
@@ -222,4 +222,12 @@ output "route53_address" {
   description = "Address pointing to frontend load balancer"
 }
 
+output "db_address" {
+  value       = module.rds.db_hostname
+  description = "DB address"
+}
 
+output "lambda_event" {
+  value       = module.lambda.result_entry
+  description = "lambda invocation result"
+}

@@ -37,6 +37,7 @@ terraform.rc
 !.gitignore
 !.terraform.lock.hcl
 *.zip
+graph.svg
 #Python directories
 **/python/*
 **/env/*
