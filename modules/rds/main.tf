@@ -59,3 +59,12 @@ resource "postgresql_role" "webapp_role" {
   superuser = false
   depends_on = [postgresql_role.lambda_role]
 }
+
+resource "postgresql_grant" "webapp_readonly" {
+  database = aws_db_instance.postgres1.db_name
+  role = postgresql_role.webapp_role.name
+  schema = "public"
+  object_type = "table"
+  objects = ["test_dataset"]
+  privileges = ["SELECT"]
+}
