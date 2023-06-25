@@ -1,17 +1,12 @@
-resource "aws_lambda_layer_version" "layer1" {
-  layer_name = "PostgreSQL"
-  s3_bucket = var.lambda_bucket
-  s3_key = "lambda_layer.zip"
-  compatible_runtimes = ["python3.10"]
-}
-
 resource "aws_lambda_function" "pytest" {
-    filename = var.lambda_zip_path
+    package_type = "Image"
+    image_uri = "${var.lambda_function_ecr}:latest"
     function_name = "pytest"
     role = var.lambda_role
-    handler = "lambda_function.lambda_handler"
-    runtime = "python3.10"
     memory_size = "512"
+    image_config {
+      command = ["lambda_function.lambda_handler"]
+    }
     environment {
       variables = {
         DBHOSTNAME = var.db_hostname
@@ -21,10 +16,9 @@ resource "aws_lambda_function" "pytest" {
         DATASET_BUCKET = var.dataset_bucket
       }
     }
-    layers = ["arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python310:3", aws_lambda_layer_version.layer1.arn]
     timeout = 20
     vpc_config {
-      subnet_ids = [var.private_subnet1]
+      subnet_ids = [var.private_subnet1, var.private_subnet2]
       security_group_ids = [var.backend_sg]
     }
 }
