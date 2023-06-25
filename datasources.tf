@@ -36,3 +36,7 @@ data "aws_route53_zone" "r53_zone" {
   name         = var.domain_name
   private_zone = false
 }
+
+data "aws_ecr_repository" "lambda_function" {
+  name = "devopslab3-lambda"
+}

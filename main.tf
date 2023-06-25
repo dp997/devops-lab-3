@@ -20,42 +20,42 @@ locals {
 #`````````
 #Lambda packaging
 #`````````
-variable "lambda_zip_path" {
-  type    = string
-  default = "./lambda_function.zip"
-}
+# variable "lambda_zip_path" {
+#   type    = string
+#   default = "./lambda_function.zip"
+# }
 
-resource "null_resource" "lambda_function" {
-  triggers = {
-    function = filesha1(local.lambda_script_path)
-  }
+# resource "null_resource" "lambda_function" {
+#   triggers = {
+#     function = filesha1(local.lambda_script_path)
+#   }
 
-  provisioner "local-exec" {
-    command = <<EOT
-      zip ${var.lambda_zip_path} ${local.lambda_script_path}
-    EOT
-  }
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       zip ${var.lambda_zip_path} ${local.lambda_script_path}
+#     EOT
+#   }
 
-  depends_on = [null_resource.lambda_layer]
-}
+#   depends_on = [null_resource.lambda_layer]
+# }
 
-resource "null_resource" "lambda_layer" {
-  triggers = {
-    requirements = filesha1(local.requirements_path)
-  }
+# resource "null_resource" "lambda_layer" {
+#   triggers = {
+#     requirements = filesha1(local.requirements_path)
+#   }
 
-  provisioner "local-exec" {
-    command = <<EOT
-      pip install -r ${local.requirements_path} -t python/     
-    EOT
-  }
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       pip install -r ${local.requirements_path} -t python/     
+#     EOT
+#   }
 
-  provisioner "local-exec" {
-    command = <<EOT
-      zip -r ${local.layer_zip_path} python/
-    EOT
-  }
-}
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       zip -r ${local.layer_zip_path} python/
+#     EOT
+#   }
+# }
 
 #`````````
 #Modules
@@ -126,12 +126,11 @@ module "scaling" {
   db_hostname = module.rds.db_hostname
   db_port     = module.rds.db_port
   db_name     = module.rds.db_name
-  db_username = module.rds.db_username
+  db_username = module.rds.db_username_webapp
 }
 
 #S3
 module "s3" {
-  depends_on = [null_resource.lambda_layer, null_resource.lambda_function]
   source     = "./modules/s3"
   #global outputs
   unique_id = random_pet.unique_id.id
@@ -162,9 +161,11 @@ module "lambda" {
   depends_on = [module.s3]
   source     = "./modules/lambda"
   #global outputs
-  lambda_zip_path = var.lambda_zip_path
+  # lambda_zip_path     = var.lambda_zip_path
+  lambda_function_ecr = data.aws_ecr_repository.lambda_function.repository_url
   #vpc outputs
   private_subnet1 = module.vpc.private_subnet_1
+  private_subnet2 = module.vpc.private_subnet_2
   #security outputs
   lambda_role = module.security.lambda_iam_role
   backend_sg  = module.security.backend_sg
@@ -172,10 +173,10 @@ module "lambda" {
   db_hostname = module.rds.db_hostname
   db_port     = module.rds.db_port
   db_name     = module.rds.db_name
-  db_username = module.rds.db_username
+  db_username = module.rds.db_username_lambda
   #s3 outputs
   dataset_bucket = module.s3.dataset_bucket
-  lambda_bucket  = module.s3.lambda_bucket
+  # lambda_bucket  = module.s3.lambda_bucket
 }
 
 #`````````
