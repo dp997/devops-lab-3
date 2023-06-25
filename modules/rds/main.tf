@@ -57,4 +57,5 @@ resource "postgresql_role" "webapp_role" {
   login = true
   roles = ["rds_iam"]
   superuser = false
+  depends_on = [postgresql_role.lambda_role]
 }
