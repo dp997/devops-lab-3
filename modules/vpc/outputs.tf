@@ -28,5 +28,5 @@ output "private_subnet_2" {
 
 output "route53_address" {
     
-    value = aws_route53_record.cname_record.name
+    value = aws_route53_record.frontend_record.name
 }

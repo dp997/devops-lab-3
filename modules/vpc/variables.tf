@@ -58,3 +58,11 @@ variable "route53_zone" {
 variable "frontend_dns_name" {
     type = string
 }
+
+variable "db_hostname" {
+    type = string
+}
+
+variable "bastion_ip" {
+    type = string
+}

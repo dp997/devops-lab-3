@@ -76,6 +76,10 @@ module "vpc" {
   nat_iam_profile = module.security.nat_iam_profile
   #load balancer outputs
   frontend_dns_name = module.load_balancers.frontend_dns_name
+  #scaling outputs
+  bastion_ip = module.scaling.bastion_ip
+  #db outputs
+  db_hostname = module.rds.db_hostname
 }
 
 #Security
@@ -158,7 +162,7 @@ module "rds" {
 }
 #Lambda
 module "lambda" {
-  depends_on = [module.s3]
+  depends_on = [module.rds.db_username_lambda]
   source     = "./modules/lambda"
   #global outputs
   # lambda_zip_path     = var.lambda_zip_path

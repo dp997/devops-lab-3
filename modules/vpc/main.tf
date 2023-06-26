@@ -167,10 +167,26 @@ resource "aws_instance" "nat_instance" {
 #Route53 config
 #``````````
 #we create a cname record since we are pointing to another domain
-resource "aws_route53_record" "cname_record" {
+resource "aws_route53_record" "frontend_record" {
   zone_id = var.route53_zone.zone_id
   name = "lab.${var.route53_zone.name}"
   type = "CNAME"
   ttl = "300"
   records = [var.frontend_dns_name]
+}
+
+resource "aws_route53_record" "db_record" {
+  zone_id = var.route53_zone.zone_id
+  name = "db.${var.route53_zone.name}"
+  type = "CNAME"
+  ttl = "300"
+  records = [var.db_hostname]
+}
+
+resource "aws_route53_record" "bastion_record" {
+  zone_id = var.route53_zone.zone_id
+  name = "bastion.${var.route53_zone.name}"
+  type = "A"
+  ttl = "300"
+  records = [var.bastion_ip]
 }
