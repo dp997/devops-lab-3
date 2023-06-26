@@ -31,6 +31,8 @@
 
 ## 🧐 About <a name = "about"></a>
 
+- [WebApp](https://github.com/dp997/devops-lab-3-webapp)
+- [Lambda](https://github.com/dp997/devops-lab-3-lambda)
 
 ### Prerequisites
 
@@ -45,11 +47,11 @@ Clone the repository and run as a standard terraform project.
 
 ## TODO
 
-* Manage dependecies so the infrastracture deploys without hiccups
+* <s>Manage dependecies so the infrastracture deploys without hiccups</s> should be fine now
 * maybe slim it down a little bit? restructure modules?
-* webapp that shows the table
+* <s>webapp that shows the table</s> <a href="https://github.com/dp997/devops-lab-3-webapp"> WebApp </a>
 * api gateway to control lambda function
-* ci/cd pipeline with github actions
+* <s>ci/cd pipeline with github actions</s> done for lambda
 
 ## ✍️ Authors <a name = "authors"></a>
 
