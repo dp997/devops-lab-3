@@ -50,6 +50,7 @@ resource "postgresql_role" "lambda_role" {
   roles = ["rds_iam"]
   depends_on = [aws_db_instance.postgres1]
   superuser = false
+  skip_reassign_owned = true
 }
 
 resource "postgresql_role" "webapp_role" {
@@ -58,6 +59,7 @@ resource "postgresql_role" "webapp_role" {
   roles = ["rds_iam"]
   superuser = false
   depends_on = [postgresql_role.lambda_role]
+  skip_reassign_owned = true
 }
 
 resource "postgresql_default_privileges" "webapp_readtable" {
