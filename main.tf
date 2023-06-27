@@ -207,6 +207,7 @@ variable "domain_name" {
 variable "db_password" {
   type        = string
   description = "Provide admin password to RDS instance."
+  sensitive = true
 }
 #``````````
 #Outputs
